@@ -158,10 +158,10 @@ if ($CallingHome['Active']) {
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li class="navbar-info">V#Q<?php echo $Reflector->GetVersion(); ?> - Dashboard
-                    v<?php echo $PageOptions['DashboardVersion']; ?></li>
-                <li class="navbar-info">Service
-                    uptime: <?php echo FormatSeconds($Reflector->GetServiceUptime()); ?></li>
+                <li class="navbar-info">Version <?php echo $Reflector->GetVersion(); ?>
+                    </li>
+                <li class="navbar-info">
+                    Uptime: <?php echo FormatSeconds($Reflector->GetServiceUptime()); ?></li>
             </ul>
         </div>
     </div>
