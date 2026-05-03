@@ -33,6 +33,10 @@ protected:
 	void UpdateContent(std::stringstream &ss, Eaction action);
 
 private:
+	bool ParseDATLine(std::string& line, Eaction action);
+	bool ParseCSVLine(std::string& line, Eaction action);
+
+private:
 	std::unordered_map<uint32_t, UCallsign> m_CallsignMap;
 	std::unordered_map<UCallsign, uint32_t, CCallsignHash, CCallsignEqual> m_DmridMap;
 };

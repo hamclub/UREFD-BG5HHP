@@ -62,37 +62,12 @@ void CLookupDmr::UpdateContent(std::stringstream &ss, Eaction action)
 	std::string line;
 	while (std::getline(ss, line))
 	{
-		bool failed = true;
-		auto l = atol(line.c_str()); // no throw guarantee
-		if (0L < l && l <= 9999999L)
-		{
-			auto id = uint32_t(l);
-			auto p1 = line.find(';');
-			if (std::string::npos != p1)
-			{
-				auto p2 = line.find(';', ++p1);
-				if (std::string::npos != p2)
-				{
-					const auto cs_str(line.substr(p1, p2-p1));
-					CCallsign cs;
-					cs.SetCallsign(cs_str, false);
-					if (cs.IsValid())
-					{
-						failed = false;
-						if (Eaction::normal == action)
-						{
-							auto key = cs.GetKey();
-							m_DmridMap[key] = id;
-							m_CallsignMap[id] = key;
-						}
-						else if (Eaction::parse == action)
-						{
-							std::cout << id << ';' << cs_str << ";\n";
-						}
-					}
-				}
-			}
-		}
+		bool failed;
+		if (m_Path.length() > 4 && m_Path.substr(m_Path.length() - 4) == ".csv")
+			failed = ParseCSVLine(line, action);
+		else
+			failed = ParseDATLine(line, action);
+
 		if (Eaction::error_only == action && failed)
 		{
 			std::cout << line << '\n';
@@ -100,4 +75,76 @@ void CLookupDmr::UpdateContent(std::stringstream &ss, Eaction action)
 	}
 	if (Eaction::normal == action)
 		std::cout << "DMR Id database size: " << m_DmridMap.size() << std::endl;
+}
+
+bool CLookupDmr::ParseDATLine(std::string& line, Eaction action) {
+	bool failed = true;
+	auto l = atol(line.c_str()); // no throw guarantee
+	if (0L < l && l <= 9999999L)
+	{
+		auto id = uint32_t(l);
+		auto p1 = line.find(';');
+		if (std::string::npos != p1)
+		{
+			auto p2 = line.find(';', ++p1);
+			if (std::string::npos != p2)
+			{
+				const auto cs_str(line.substr(p1, p2-p1));
+				CCallsign cs;
+				cs.SetCallsign(cs_str, false);
+				if (cs.IsValid())
+				{
+					failed = false;
+					if (Eaction::normal == action)
+					{
+						auto key = cs.GetKey();
+						m_DmridMap[key] = id;
+						m_CallsignMap[id] = key;
+					}
+					else if (Eaction::parse == action)
+					{
+						std::cout << id << ';' << cs_str << ";\n";
+					}
+				}
+			}
+		}
+	}
+
+	return failed;
+}
+
+bool CLookupDmr::ParseCSVLine(std::string& line, Eaction action) {
+	bool failed = true;
+	auto l = atol(line.c_str()); // no throw guarantee
+	if (0L < l && l <= 9999999L)
+	{
+		auto id = uint32_t(l);
+		auto p1 = line.find(',');
+		if (std::string::npos != p1)
+		{
+			auto p2 = line.find(',', ++p1);
+			if (std::string::npos != p2)
+			{
+				const auto cs_str(line.substr(p1, p2-p1));
+				CCallsign cs;
+				cs.SetCallsign(cs_str, false);
+				if (cs.IsValid())
+				{
+					failed = false;
+					if (Eaction::normal == action)
+					{
+						auto key = cs.GetKey();
+						m_DmridMap[key] = id;
+						m_CallsignMap[id] = key;
+					}
+					else if (Eaction::parse == action)
+					{
+						std::cout << id << ',' << cs_str << ",\n";
+					}
+				}
+			}
+		}
+	}
+
+	return failed;
 }
