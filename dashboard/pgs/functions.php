@@ -51,12 +51,16 @@ function ParseTime($Input) {
 
 function FormatSeconds($seconds) {
   $seconds = abs($seconds); 
-  return sprintf("%d days %02d:%02d:%02d", $seconds/60/60/24,($seconds/60/60)%24,($seconds/60)%60,$seconds%60);
+  $days = (int)($seconds / 86400);           // 86400 = 60*60*24
+  $hours = (int)(($seconds % 86400) / 3600);
+  $minutes = (int)(($seconds % 3600) / 60);
+  $secs = (int)($seconds % 60);
+  return sprintf("%d days %02d:%02d:%02d", $days, $hours, $minutes, $secs);
 } 
 
 function CreateCode ($laenge) {   
 	$zeichen = "1234567890abcdefghijklmnopqrstuvwyxzABCDEFGHIJKLMNAOPQRSTUVWYXZ";   
-	mt_srand( (double) microtime() * 1000000); 
+	mt_srand( (float) microtime() * 1000000);
 	$out = "";
 	for ($i=1;$i<=$laenge;$i++){ 
 		$out .= $zeichen[mt_rand(0,(strlen($zeichen)-1))];       
