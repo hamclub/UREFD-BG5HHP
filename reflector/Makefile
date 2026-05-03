@@ -30,7 +30,7 @@ BINDIR ?=/usr/local/bin
 DEBUG ?=false
 DHT ?=false
 
-CXXFLAGS = -Wall -std=c++17 -MMD -Ilib
+CXXFLAGS = -W -Wall -std=c++17 -MMD -Ilib -fno-rtti
 ifeq ($(DEBUG), true)
 CXXFLAGS += -ggdb3 -DDEBUG 
 else
