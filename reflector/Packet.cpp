@@ -37,6 +37,10 @@ CPacket::CPacket()
 	m_bLastPacket = false;
 };
 
+CPacket::~CPacket() {
+
+}
+
 // for the network
 CPacket::CPacket(const CBuffer &buf)
 {

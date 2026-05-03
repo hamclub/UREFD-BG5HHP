@@ -30,6 +30,8 @@
 #include "Global.h"
 #include "CurlGet.h"
 
+#include <cassert>
+
 // ini file keywords
 #define JAUTOLINKMODULE          "AutoLinkModule"
 #define JBINDINGADDRESS          "BindingAddress"
@@ -455,12 +457,10 @@ bool CConfigure::ReadData(const std::string &path)
 			case ESection::dmrid:
 			case ESection::nxdnid:
 			case ESection::ysffreq:
-				switch (section)
-				{
-					case ESection::dmrid:   pdb = &g_Keys.dmriddb;   break;
-					case ESection::nxdnid:  pdb = &g_Keys.nxdniddb;  break;
-					case ESection::ysffreq: pdb = &g_Keys.ysftxrxdb; break;
-				}
+				if (section == ESection::dmrid)		pdb = &g_Keys.dmriddb;
+				if (section == ESection::nxdnid)	pdb = &g_Keys.nxdniddb;
+				if (section == ESection::ysffreq)	pdb = &g_Keys.ysftxrxdb;
+				assert(pdb);
 				if (0 == key.compare(JURL))
 					data[pdb->url] = value;
 				else if (0 == key.compare(JMODE))
@@ -866,7 +866,7 @@ void CConfigure::badParam(const std::string &key) const
 
 bool CConfigure::checkModules(std::string &m) const
 {
-	bool rval = false; // return true on error
+	// bool rval = false; // return true on error
 	for (unsigned i=0; i<m.size(); i++)
 		if (islower(m[i]))
 			m[i] = toupper(m[i]);

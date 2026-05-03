@@ -198,7 +198,8 @@ void CCodecStream::Task(void)
 			// the fd was good and then the send was successful, so...
 			// push the frame to our local queue where it can wait for the transcoder
 
-			m_LocalQueue.Push(std::move(m_Queue.Pop()));
+			// m_LocalQueue.Push(std::move(m_Queue.Pop()));
+			m_LocalQueue.Push(m_Queue.Pop());
 		}
 	}
 }

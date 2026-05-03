@@ -181,7 +181,7 @@ void CBuffer::DebugDump(std::ofstream &debugout) const
 	{
 		char sz[16];
 		//sprintf(sz, "%02X", m_data.data()[i]);
-		sprintf(sz, "0x%02X", m_data.data()[i]);
+		snprintf(sz, sizeof(sz), "0x%02X", m_data.data()[i]);
 		debugout << sz;
 		if ( i == m_data.size()-1 )
 		{
@@ -229,7 +229,7 @@ void CBuffer::Dump(const std::string &title)
 
 		char temp[10U];
 		for (unsigned i = 0U; i < bytes; i++) {
-			::sprintf(temp, "%02X ", m_data[offset + i]);
+			::snprintf(temp, sizeof(temp), "%02X ", m_data[offset + i]);
 			output += temp;
 		}
 
@@ -249,7 +249,7 @@ void CBuffer::Dump(const std::string &title)
 
 		output += '*';
 
-		::sprintf(temp, "%04X:  ", offset);
+		::snprintf(temp, sizeof(temp), "%04X:  ", offset);
 		std::cout << temp << output << std::endl;
 
 		offset += 16U;

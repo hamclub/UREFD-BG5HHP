@@ -31,6 +31,7 @@ class CPacket
 public:
 	// constructor
 	CPacket();
+	virtual ~CPacket();
 	CPacket(const CBuffer &Buffer);
 	CPacket(uint16_t sid, uint8_t dstarpid);
 	CPacket(uint16_t sid, uint8_t dmrpid, uint8_t dmrsubpid, bool lastpacket);

@@ -33,7 +33,7 @@ class CLookup
 {
 public:
 	// constructor
-	CLookup() : keep_running(true), m_LastLoadTime(0) {}
+	CLookup() : m_LastLoadTime(0), keep_running(true){}
 
 	void LookupInit();
 	void LookupClose();

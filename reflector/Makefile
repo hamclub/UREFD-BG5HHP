@@ -24,12 +24,16 @@ INICHECK = inicheck
 
 DBUTIL = dbutil
 
-include urfd.mk
+CC ?=gcc
+CXX ?=g++
+BINDIR ?=/usr/local/bin
+DEBUG ?=false
+DHT ?=false
 
-ifeq ($(debug), true)
-CFLAGS = -ggdb3 -DDEBUG -W -Werror -std=c++17 -MMD -MD
+ifeq ($(DEBUG), true)
+CXXFLAGS = -ggdb3 -DDEBUG -W -std=c++17 -MMD
 else
-CFLAGS = -W -Werror -std=c++17 -MMD -MD
+CXXFLAGS = -Os -Wall -std=c++17 -MMD
 endif
 
 LDFLAGS=-pthread -lcurl
@@ -37,7 +41,12 @@ LDFLAGS=-pthread -lcurl
 ifeq ($(DHT), true)
 LDFLAGS += -lopendht
 else
-CFLAGS += -DNO_DHT
+CXXFLAGS += -DNO_DHT
+endif
+
+ifeq ($(shell uname -s),Darwin)
+	CXXFLAGS+= -I/opt/homebrew/include
+	LDFLAGS+= -L/opt/homebrew/lib
 endif
 
 SRCS = $(wildcard *.cpp)
@@ -51,13 +60,13 @@ $(EXE) : $(OBJS)
 	$(CXX) $^ -o $@ $(LDFLAGS)
 
 $(INICHECK) : Configure.cpp CurlGet.o
-	$(CXX) -DINICHECK $(CFLAGS) $< CurlGet.o -o $@ -lcurl
+	$(CXX) -DINICHECK $(CXXFLAGS) $< CurlGet.o -o $@ -lcurl
 
 $(DBUTIL) : Main.cpp $(DBUTILOBJS)
-	$(CXX) -DUTILITY $(CFLAGS) $< $(DBUTILOBJS) -o $@ -pthread -lcurl
+	$(CXX) -DUTILITY $(CXXFLAGS) $< $(DBUTILOBJS) -o $@ -pthread -lcurl
 
 %.o : %.cpp
-	$(CXX) $(CFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean :
 	$(RM) *.o *.d $(EXE) $(INICHECK) $(DBUTIL)
