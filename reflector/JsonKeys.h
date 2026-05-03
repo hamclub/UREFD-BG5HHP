@@ -23,12 +23,14 @@
 // configuration key names
 struct SJsonKeys {
 	struct PORTONLY { const std::string port; }
-	dcs { "DCSPort" },
-	dextra { "DExtraPort" },
-	dmrplus { "DMRPlusPort" },
-	dplus { "DPlusPort" },
-	m17 { "M17Port" },
 	urf { "URFPort" };
+
+	struct PROTOCOL { const std::string enable, port; }
+	dcs {"DCSEnable", "DCSPort"},
+	dextra {"DExtraEnable", "DExtraPort" },
+	dmrplus {"DMRPlusEnable", "DMRPlusPort"},
+	dplus {"DPlusEnable", "DPlusPort"},
+	m17 {"M17Enable", "M17Port"};
 
 	struct G3 { const std::string enable; }
 	g3 { "G3Enable" };
@@ -56,9 +58,9 @@ struct SJsonKeys {
 	struct USRP { const std::string enable, ip, txport, rxport, module, callsign, filepath; }
 	usrp { "usrpEnable", "usrpIpAddress", "urspTxPort", "usrpRxPort", "usrpModule", "usrpCallsign", "usrpFilePath" };
 
-	struct P25NXDN { const std::string port, autolinkmod, reflectorid; }
-	p25 { "P25Port",  "P25AutolinkMod",   "P25ReflectorID" },
-	nxdn { "NXDNPort", "NXDNAutolinkMod", "NXDNReflectorID" };
+	struct P25NXDN { const std::string enable, port, autolinkmod, reflectorid; }
+	p25 { "P25Enable", "P25Port",  "P25AutolinkMod",   "P25ReflectorID" },
+	nxdn { "NXDNEnable", "NXDNPort", "NXDNAutolinkMod", "NXDNReflectorID" };
 
 	struct YSF { const std::string port, autolinkmod, enabledgid, defaulttxfreq, defaultrxfreq;
 		struct YSLREG { const std::string id, name, description; } ysfreflectordb; }

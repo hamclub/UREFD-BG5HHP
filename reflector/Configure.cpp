@@ -347,13 +347,17 @@ bool CConfigure::ReadData(const std::string &path)
 					badParam(key);
 				break;
 			case ESection::dcs:
-				if (0 == key.compare(JPORT))
+				if (0 == key.compare(JENABLE))
+					data[g_Keys.dcs.enable] = IS_TRUE(value[0]);
+				else if (0 == key.compare(JPORT))
 					data[g_Keys.dcs.port] = getUnsigned(value, "DCS Port", 1024, 65535, 30051);
 				else
 					badParam(key);
 				break;
 			case ESection::dextra:
-				if (0 == key.compare(JPORT))
+				if (0 == key.compare(JENABLE))
+					data[g_Keys.dextra.enable] = IS_TRUE(value[0]);
+				else if (0 == key.compare(JPORT))
 					data[g_Keys.dextra.port] = getUnsigned(value, "DExtra Port", 1024, 65535, 30001);
 				else
 					badParam(key);
@@ -365,19 +369,25 @@ bool CConfigure::ReadData(const std::string &path)
 					badParam(key);
 				break;
 			case ESection::dmrplus:
-				if (0 == key.compare(JPORT))
+				if (0 == key.compare(JENABLE))
+					data[g_Keys.dmrplus.enable] = IS_TRUE(value[0]);
+				else if (0 == key.compare(JPORT))
 					data[g_Keys.dmrplus.port] = getUnsigned(value, "DMRPlus Port", 1024, 65535, 8880);
 				else
 					badParam(key);
 				break;
 			case ESection::dplus:
-				if (0 == key.compare(JPORT))
+				if (0 == key.compare(JENABLE))
+					data[g_Keys.dplus.enable] = IS_TRUE(value[0]);
+				else if (0 == key.compare(JPORT))
 					data[g_Keys.dplus.port] = getUnsigned(value, "DPlus Port", 1024, 65535, 20001);
 				else
 					badParam(key);
 				break;
 			case ESection::m17:
-				if (0 == key.compare(JPORT))
+				if (0 == key.compare(JENABLE))
+					data[g_Keys.m17.enable] = IS_TRUE(value[0]);
+				else if (0 == key.compare(JPORT))
 					data[g_Keys.m17.port] = getUnsigned(value, "M17 Port", 1024, 65535, 17000);
 				else
 					badParam(key);
@@ -391,7 +401,9 @@ bool CConfigure::ReadData(const std::string &path)
 					badParam(key);
 				break;
 			case ESection::nxdn:
-				if (0 == key.compare(JPORT))
+				if (0 == key.compare(JENABLE))
+					data[g_Keys.nxdn.enable] = IS_TRUE(value[0]);
+				else if (0 == key.compare(JPORT))
 					data[g_Keys.nxdn.port] = getUnsigned(value, "NDXN Port", 1024, 65535, 41400);
 				else if (0 == key.compare(JAUTOLINKMODULE))
 					setAutolink(JNXDN, g_Keys.nxdn.autolinkmod, value);
@@ -401,7 +413,9 @@ bool CConfigure::ReadData(const std::string &path)
 					badParam(key);
 				break;
 			case ESection::p25:
-				if (0 == key.compare(JPORT))
+				if (0 == key.compare(JENABLE))
+					data[g_Keys.p25.enable] = IS_TRUE(value[0]);
+				else if (0 == key.compare(JPORT))
 					data[g_Keys.p25.port] = getUnsigned(value, "P25 Port", 1024, 65535, 41000);
 				else if (0 == key.compare(JAUTOLINKMODULE))
 					setAutolink(JP25, g_Keys.p25.autolinkmod, value);
@@ -689,12 +703,40 @@ bool CConfigure::ReadData(const std::string &path)
 		}
 	}
 
+	// Protocols with enable/port config
+	// DCS
+	if (isDefined(ErrorLevel::fatal, JDCS, JENABLE, g_Keys.dcs.enable, rval))
+	{
+		if (GetBoolean(g_Keys.dcs.enable))
+			isDefined(ErrorLevel::fatal, JDCS, JPORT, g_Keys.dcs.port, rval);
+	}
+
+	// DExtra
+	if (isDefined(ErrorLevel::fatal, JDEXTRA, JENABLE, g_Keys.dextra.enable, rval))
+	{
+		if (GetBoolean(g_Keys.dextra.enable))
+			isDefined(ErrorLevel::fatal, JDEXTRA, JPORT, g_Keys.dextra.port, rval);
+	}
+	// DPlus
+	if (isDefined(ErrorLevel::fatal, JDPLUS, JENABLE, g_Keys.dplus.enable, rval))
+	{
+		if (GetBoolean(g_Keys.dplus.enable))
+			isDefined(ErrorLevel::fatal, JDPLUS, JPORT, g_Keys.dplus.port, rval);
+	}
+	// DMRPlus
+	if (isDefined(ErrorLevel::fatal, JDMRPLUS, JENABLE, g_Keys.dmrplus.enable, rval))
+	{
+		if (GetBoolean(g_Keys.dmrplus.enable))
+			isDefined(ErrorLevel::fatal, JDMRPLUS, JPORT, g_Keys.dmrplus.port, rval);
+	}
+	// M17
+	if (isDefined(ErrorLevel::fatal, JM17, JENABLE, g_Keys.m17.enable, rval))
+	{
+		if (GetBoolean(g_Keys.m17.enable))
+			isDefined(ErrorLevel::fatal, JM17, JPORT, g_Keys.m17.port, rval);
+	}
+
 	// "simple" protocols with only a Port
-	isDefined(ErrorLevel::fatal, JDCS, JPORT, g_Keys.dcs.port, rval);
-	isDefined(ErrorLevel::fatal, JDEXTRA, JPORT, g_Keys.dextra.port, rval);
-	isDefined(ErrorLevel::fatal, JDMRPLUS, JPORT, g_Keys.dmrplus.port, rval);
-	isDefined(ErrorLevel::fatal, JDPLUS, JPORT, g_Keys.dplus.port, rval);
-	isDefined(ErrorLevel::fatal, JM17, JPORT, g_Keys.m17.port, rval);
 	isDefined(ErrorLevel::fatal, JURF, JPORT, g_Keys.urf.port, rval);
 
 	// BM
@@ -714,14 +756,20 @@ bool CConfigure::ReadData(const std::string &path)
 	isDefined(ErrorLevel::fatal, JMMDVM, JDEFAULTID, g_Keys.mmdvm.defaultid, rval);
 
 	// NXDN
-	isDefined(ErrorLevel::fatal, JNXDN, JPORT, g_Keys.nxdn.port, rval);
-	checkAutoLink(JNXDN, JAUTOLINKMODULE, g_Keys.nxdn.autolinkmod, rval);
-	isDefined(ErrorLevel::fatal, JNXDN, JREFLECTORID, g_Keys.nxdn.reflectorid, rval);
+	if (isDefined(ErrorLevel::fatal, JNXDN, JENABLE, g_Keys.nxdn.enable, rval))
+	{
+		isDefined(ErrorLevel::fatal, JNXDN, JPORT, g_Keys.nxdn.port, rval);
+		checkAutoLink(JNXDN, JAUTOLINKMODULE, g_Keys.nxdn.autolinkmod, rval);
+		isDefined(ErrorLevel::fatal, JNXDN, JREFLECTORID, g_Keys.nxdn.reflectorid, rval);
+	}
 
 	// P25
-	isDefined(ErrorLevel::fatal, JP25, JPORT, g_Keys.p25.port, rval);
-	checkAutoLink(JP25, JAUTOLINKMODULE, g_Keys.p25.autolinkmod, rval);
-	isDefined(ErrorLevel::fatal, JP25, JREFLECTORID, g_Keys.p25.reflectorid, rval);
+	if (isDefined(ErrorLevel::fatal, JP25, JENABLE, g_Keys.p25.enable, rval))
+	{
+		isDefined(ErrorLevel::fatal, JP25, JPORT, g_Keys.p25.port, rval);
+		checkAutoLink(JP25, JAUTOLINKMODULE, g_Keys.p25.autolinkmod, rval);
+		isDefined(ErrorLevel::fatal, JP25, JREFLECTORID, g_Keys.p25.reflectorid, rval);
+	}
 
 	// USRP
 	if (isDefined(ErrorLevel::fatal, JUSRP, JENABLE, g_Keys.usrp.enable, rval))
