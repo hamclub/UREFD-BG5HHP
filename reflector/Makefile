@@ -18,7 +18,7 @@
 # if you change these locations, make sure the sgs.service file is updated!
 # you will also break hard coded paths in the dashboard file, index.php.
 
-EXE = urfd
+EXE = urefd
 
 INICHECK = inicheck
 
@@ -27,29 +27,28 @@ DBUTIL = dbutil
 CC ?=gcc
 CXX ?=g++
 BINDIR ?=/usr/local/bin
-DEBUG ?=false
-DHT ?=false
-HAS_CURL ?=false
+DEBUG ?=0
+DHT ?=0
+HAS_CURL ?=0
 
-CXXFLAGS = -W -Wall -std=c++17 -MMD -Ilib -fno-rtti
-ifeq ($(DEBUG), true)
-CXXFLAGS += -ggdb3 -DDEBUG 
+CXXFLAGS = -W -Wall -std=c++17 -Ilib -fno-rtti
+ifeq ($(DEBUG), 1)
+CXXFLAGS += -g -ggdb -DDEBUG -MMD
 else
 CXXFLAGS += -Os -DNDEBUG
 endif
 
 LDFLAGS=-pthread
 
-ifeq ($(DHT), true)
+ifeq ($(DHT), 1)
 LDFLAGS += -lopendht
 else
 CXXFLAGS += -DNO_DHT
 endif
 
-ifeq ($(HAS_CURL), true)
+ifeq ($(HAS_CURL), 1)
 CXXFLAGS += -DHAS_CURL
 LDFLAGS += -lcurl
-else
 endif
 
 ifeq ($(shell uname -s),Darwin)
