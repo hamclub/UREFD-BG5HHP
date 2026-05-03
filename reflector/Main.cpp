@@ -112,9 +112,9 @@ enum class Edb { none, dmr, nxdn, ysf };
 
 int main(int argc, char *argv[])
 {
-	Edb db;
-	Eaction action;
-	Esource source;
+	Edb db = Edb::none;
+	Eaction action = Eaction::normal;
+	Esource source = Esource::file;
 
 	if (5 != argc)
 	{
