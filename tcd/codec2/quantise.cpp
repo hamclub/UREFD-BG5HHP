@@ -708,7 +708,11 @@ float CQuantize::decode_energy(int index, int bits)
 
 	step = (e_max - e_min)/e_levels;
 	e    = e_min + step*(index);
+#ifdef __APPLE__
+	e    = powf(10.0f, e/10.0);
+#else
 	e    = exp10f(e/10.0);
+#endif
 
 	return e;
 }

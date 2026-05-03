@@ -936,7 +936,11 @@ void CCodec2::postfilter( MODEL *model, float *bg_est )
 	*/
 
 	uv = 0;
+#ifdef __APPLE__
+	thresh = powf(10.0f, (*bg_est + BG_MARGIN)/20.0f);
+#else
 	thresh = exp10f((*bg_est + BG_MARGIN)/20.0);
+#endif
 	if (model->voiced)
 		for(m=1; m<=model->L; m++)
 			if (model->A[m] < thresh)

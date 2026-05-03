@@ -1,30 +1,31 @@
 #Copyright (C) 2021 by Thomas A. Early, N7TAE
 
 #include tcd.mk
+EXE = tcd
 
 CC ?=gcc
 CXX ?=g++
 BINDIR ?=/usr/local/bin
 DEBUG ?=0
+SWAMBE2 ?=0
+SWMODES ?=1
 
-ifeq ($(debug), true)
-CFLAGS = -ggdb3 -W -Werror -Icodec2 -MMD -MD -std=c++17
+CXXFLAGS = -W -Wall -std=c++17 -Ilib -Icodec2 -fno-rtti
+ifeq ($(DEBUG), 1)
+CXXFLAGS += -g -DDEBUG -MMD
 else
-CFLAGS = -W -Werror -Icodec2 -MMD -MD -std=c++17
+CXXFLAGS += -Os -DNDEBUG
 endif
 
-ifeq ($(swambe2), true)
-CFLAGS+= -DUSE_SW_AMBE2
+ifeq ($(SWAMBE2), 1)
+CXXFLAGS+= -DUSE_SW_AMBE2
+LDFLAGS += -lmd380_vocoder
 endif
 
 LDFLAGS = -limbe_vocoder -pthread
 
-ifeq ($(swambe2), true)
-LDFLAGS += -lmd380_vocoder
-endif
-
-ifeq ($(swmodes), true)
-CFLAGS+= -DSW_MODES_ONLY
+ifeq ($(SWMODES), 1)
+CXXFLAGS+= -DSW_MODES_ONLY
 else
 LDFLAGS += -lftd2xx
 endif
@@ -32,17 +33,16 @@ endif
 SRCS = $(wildcard *.cpp) $(wildcard codec2/*.cpp)
 OBJS = $(SRCS:.cpp=.o)
 DEPS = $(SRCS:.cpp=.d)
-EXE = tcd
 
 $(EXE) : $(OBJS)
-ifeq ($(swambe2), true)
+ifeq ($(SWAMBE2), 1)
 	$(CXX) $(OBJS) $(LDFLAGS) -o $@ -Xlinker --section-start=.firmware=0x0800C000 -Xlinker  --section-start=.sram=0x20000000
 else
 	$(CXX) $(OBJS) $(LDFLAGS) -o $@
 endif
 
 %.o : %.cpp
-	$(CXX) $(CFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean :
 	$(RM) $(EXE) $(OBJS) $(DEPS)
