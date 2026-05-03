@@ -169,7 +169,7 @@ bool CConfigure::ReadData(const std::string &path)
 		trim(line);
 		if (3 > line.size())
 			continue;	// can't be anything
-		if ('#' == line.at(0))
+		if ('#' == line.at(0) || ';' == line.at(0))
 			continue;	// skip comments
 
 		// check for next section
@@ -238,6 +238,9 @@ bool CConfigure::ReadData(const std::string &path)
 			continue;
 		}
 		auto pos = tokens[1].find('#');
+		if (std::string::npos == pos)
+			pos = tokens[1].find(';');
+
 		if (std::string::npos != pos)
 		{
 			tokens[1].assign(tokens[1].substr(0, pos));
