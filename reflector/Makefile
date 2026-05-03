@@ -29,6 +29,7 @@ CXX ?=g++
 BINDIR ?=/usr/local/bin
 DEBUG ?=false
 DHT ?=false
+HAS_CURL ?=false
 
 CXXFLAGS = -W -Wall -std=c++17 -MMD -Ilib -fno-rtti
 ifeq ($(DEBUG), true)
@@ -37,12 +38,18 @@ else
 CXXFLAGS += -Os -DNDEBUG
 endif
 
-LDFLAGS=-pthread -lcurl
+LDFLAGS=-pthread
 
 ifeq ($(DHT), true)
 LDFLAGS += -lopendht
 else
 CXXFLAGS += -DNO_DHT
+endif
+
+ifeq ($(HAS_CURL), true)
+CXXFLAGS += -DHAS_CURL
+LDFLAGS += -lcurl
+else
 endif
 
 ifeq ($(shell uname -s),Darwin)
@@ -61,10 +68,10 @@ $(EXE) : $(OBJS)
 	$(CXX) $^ -o $@ $(LDFLAGS)
 
 $(INICHECK) : Configure.cpp CurlGet.o
-	$(CXX) -DINICHECK $(CXXFLAGS) $< CurlGet.o -o $@ -lcurl
+	$(CXX) -DINICHECK $(CXXFLAGS) $< CurlGet.o -o $@ $(LDFLAGS)
 
 $(DBUTIL) : Main.cpp $(DBUTILOBJS)
-	$(CXX) -DUTILITY $(CXXFLAGS) $< $(DBUTILOBJS) -o $@ -pthread -lcurl
+	$(CXX) -DUTILITY $(CXXFLAGS) $< $(DBUTILOBJS) -o $@ $(LDFLAGS)
 
 %.o : %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@

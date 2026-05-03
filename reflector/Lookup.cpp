@@ -96,9 +96,13 @@ void CLookup::Thread()
 
 bool CLookup::LoadContentHttp(std::stringstream &ss)
 {
+#ifdef HAS_CURL
 	CCurlGet get;
 	auto code = get.GetURL(m_Url, ss);
 	return CURLE_OK == code;
+#else
+	return false;
+#endif
 }
 
 bool CLookup::LoadContentFile(std::stringstream &ss)

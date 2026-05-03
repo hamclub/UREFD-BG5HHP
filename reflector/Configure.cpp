@@ -146,6 +146,7 @@ bool CConfigure::ReadData(const std::string &path)
 
 	std::string ipv4, ipv6;
 
+#ifdef HAS_CURL
 	{
 		CCurlGet curl;
 		std::stringstream ss;
@@ -161,6 +162,10 @@ bool CConfigure::ReadData(const std::string &path)
 			trim(ipv6);
 		}
 	}
+#else
+	ipv4 = "0.0.0.0";
+	ipv6 = "0:0:0:0:0:0:0:0";
+#endif
 
 	std::string line;
 	while (std::getline(cfgfile, line))

@@ -16,6 +16,8 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef HAS_CURL
+
 #include "CurlGet.h"
 
 CCurlGet::CCurlGet()
@@ -66,3 +68,5 @@ CURLcode CCurlGet::GetURL(const std::string &url, std::stringstream &ss, long ti
 	}
 	return code;
 }
+
+#endif

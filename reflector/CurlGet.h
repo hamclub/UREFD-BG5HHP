@@ -18,6 +18,7 @@
 
 #pragma once
 
+#ifdef HAS_CURL
 #include <curl/curl.h>
 #include <iostream>
 #include <string>
@@ -32,3 +33,4 @@ public:
 private:
 	static size_t data_write(void* buf, size_t size, size_t nmemb, void* userp);
 };
+#endif
