@@ -272,9 +272,12 @@ void CCallsign::SetDmrid(uint32_t dmrid, bool UpdateCallsign)
 	m_uiDmrid = dmrid;
 	if ( UpdateCallsign )
 	{
+		// remove the extra 2 digis of ssid, 460500901 -> 4605009
+		uint32_t dmrid2 = (dmrid <= 9999999) ? dmrid : dmrid / 100;
+
 		g_LDid.Lock();
 		{
-			auto callsign = g_LDid.FindCallsign(dmrid);
+			auto callsign = g_LDid.FindCallsign(dmrid2);
 			if ( callsign != nullptr )
 			{
 				m_Callsign.l = callsign->l;
