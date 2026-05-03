@@ -180,8 +180,10 @@ if ($CallingHome['Active']) {
                         (<?php echo $Reflector->PeerCount(); ?>)</a></li>
                 <li<?php echo ($_GET['show'] == "reflectors") ? ' class="active"' : ''; ?>><a
                             href="./index.php?show=reflectors">Reflector List</a></li>
+                <!--
                 <li<?php echo ($_GET['show'] == "livequadnet") ? ' class="active"' : ''; ?>><a
                             href="./index.php?show=livequadnet">QuadNet Live</a></li>
+                -->
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -203,9 +205,11 @@ if ($CallingHome['Active']) {
                 case 'repeaters'  :
                     require_once("./pgs/repeaters.php");
                     break;
+/*
                 case 'livequadnet' :
                     require_once("./pgs/livequadnet.php");
                     break;
+*/
                 case 'peers'      :
                     require_once("./pgs/peers.php");
                     break;
